@@ -1,0 +1,43 @@
+﻿@using Algobot.Client.Authentication;
+@using Microsoft.AspNetCore.Authorization;
+@using Microsoft.AspNetCore.Components.Authorization;
+
+@page "/login";
+@attribute [AllowAnonymous]
+@inject AuthenticationStateProvider AuthenticationStateProvider
+
+@if (IsLoading)
+{
+    <MudSkeleton />
+}
+else
+{
+    <MudTextField @bind-Value="@Password" Label="Password" Variant="Variant.Text"></MudTextField>
+    <MudButton OnClick="@SignIn">Log in</MudButton>    
+}
+
+@code {
+    [Inject]
+    public NavigationManager NavigationManager { get; set; } = null!;
+
+    private string Password = string.Empty;
+    private bool IsLoading = false;
+
+    private async Task SignIn()
+    {
+        try
+        {
+            IsLoading = true;
+            StateHasChanged();
+
+            await ((PasswordOnlyAuthenticationStateProvider)AuthenticationStateProvider)
+                .AuthenticateUser(Password);
+
+            NavigationManager.NavigateTo("/");
+        }
+        finally
+        {
+            IsLoading = false;
+        }
+    }
+}

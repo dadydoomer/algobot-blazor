@@ -11,3 +11,5 @@ COPY --from=build /app ./
 EXPOSE 80
 EXPOSE 443
 ENTRYPOINT ["dotnet", "Algobot.Server.dll"]
+
+# docker build -t algobot-blazor -f Dockerfile .

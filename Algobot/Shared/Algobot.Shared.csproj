@@ -7,6 +7,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\..\Algo.Bot.Application\Algo.Bot.Application.csproj" />
+    <ProjectReference Include="..\..\Algo.Bot.Domain\Algo.Bot.Domain.csproj" />
+    <ProjectReference Include="..\..\Algo.Bot.Infrastructure\Algo.Bot.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <SupportedPlatform Include="browser" />
   </ItemGroup>
 </Project>

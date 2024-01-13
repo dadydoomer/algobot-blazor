@@ -1,0 +1,30 @@
+version: '3.4'
+ 
+networks:
+    myAppNetwork:       
+ 
+services:
+    database:
+        container_name: SqlServerContainer
+        image: mcr.microsoft.com/mssql/server:2017-latest
+        ports:
+            - 8002:1433
+        environment:
+            - ACCEPT_EULA=Y
+            - MSSQL_SA_PASSWORD=User!234 
+    blazor:
+        container_name: Algobot
+        image: ${DOCKER_REGISTRY-}algobot-blazor
+        ports:
+            - 8001:80 
+        build:
+          context: .
+          dockerfile: Dockerfile
+        environment:
+            BinanceApi__ApiKey: ${BinanceApi__ApiKey}
+            BinanceApi__SecretKey: ${BinanceApi__SecretKey}
+            CoinMarketCap__ApiKey: ${CoinMarketCap__ApiKey}
+            ApiKeyOptions__ApiKey: ${ApiKeyOptions__ApiKey}
+            ConnectionStrings__DefaultConnection: ${ConnectionStrings__DefaultConnection}          
+        depends_on:
+            - database

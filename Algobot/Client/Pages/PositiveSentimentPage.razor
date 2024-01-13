@@ -1,0 +1,72 @@
+﻿@using Algo.Bot.Domain.Models;
+@using System.Text.Json;
+@using Algobot.Client.Components
+
+@if (isLoading)
+{
+    <MudSkeleton></MudSkeleton>
+}
+else
+{
+    <SelectCoin SelectedSymbol="@SelectedSymbol" Symbols="@Symbols" SymbolIndexChanged="@SymbolIndexChanged"></SelectCoin>
+    @if (Candles.Any())
+    {
+        <CandleChart Candles="@Candles"></CandleChart>            
+    }
+}
+
+@code {
+    [Inject]
+    public HttpClient Http { get; set; } = null!;
+
+    private List<string> Symbols = new List<string>();
+    private List<Candle> Candles = new List<Candle>();
+    private string SelectedSymbol = string.Empty;
+
+    private bool isLoading = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            isLoading = true;
+            StateHasChanged();
+
+            Symbols = await GetSymbols();
+
+            if (Symbols.Any())
+            {
+                SelectedSymbol = Symbols.First();
+                Candles = await GetCoinCandles(SelectedSymbol);
+            }
+
+        }
+        finally
+        {
+            isLoading = false;
+            StateHasChanged();
+        }
+    }
+
+    private async Task SymbolIndexChanged(int symbolIndex)
+    {
+        SelectedSymbol = Symbols.ElementAt(symbolIndex);
+        Candles = await GetCoinCandles(SelectedSymbol);
+    }
+
+    private async Task<List<Candle>> GetCoinCandles(string symbol)
+    {
+        var response = await Http.GetAsync($"Coin/{symbol}");
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<List<Candle>>() ?? new List<Candle>();
+    }
+
+    private async Task<List<string>> GetSymbols()
+    {
+        var response = await Http.GetAsync("Coin");
+        response.EnsureSuccessStatusCode();
+
+        return await response.Content.ReadFromJsonAsync<List<string>>() ?? new List<string>();
+    }
+}

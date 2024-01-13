@@ -1,0 +1,69 @@
+﻿@using Algo.Bot.Domain.Models;
+
+<BlazorAlgoBot.Client.Components.CandleChart Candles="@Candles"></BlazorAlgoBot.Client.Components.CandleChart>
+
+@code {
+    List<Candle> Candles = new List<Candle>
+    {
+        new Candle
+        {
+            High = 47146,
+            Close = 47060,
+            Open = 46098,
+            Low = 46052,
+            DateTime = DateTime.UtcNow.AddHours(4 * 0),
+            Interval = Algo.Bot.Domain.ValueObject.Interval.FourHour,
+            Symbol = "BTCUSD"
+        },
+        new Candle
+        {
+            High = 48957,
+            Close = 46799,
+            Open = 47081,
+            Low = 46490,
+            DateTime = DateTime.UtcNow.AddHours(4 * 1),
+            Interval = Algo.Bot.Domain.ValueObject.Interval.FourHour,
+            Symbol = "BTCUSD"
+        },
+        new Candle
+        {
+            High = 47024,
+            Close = 46677,
+            Open = 46799,
+            Low = 45627,
+            DateTime = DateTime.UtcNow.AddHours(4 * 2),
+            Interval = Algo.Bot.Domain.ValueObject.Interval.FourHour,
+            Symbol = "BTCUSD"
+        },
+        new Candle
+        {
+            High = 46978,
+            Close = 46415,
+            Open = 46696,
+            Low = 46105,
+            DateTime = DateTime.UtcNow.AddHours(4 * 3),
+            Interval = Algo.Bot.Domain.ValueObject.Interval.FourHour,
+            Symbol = "BTCUSD"
+        },
+        new Candle
+        {
+            High = 46978,
+            Close = 46415,
+            Open = 46696,
+            Low = 46105,
+            DateTime = DateTime.UtcNow.AddHours(4 * 4),
+            Interval = Algo.Bot.Domain.ValueObject.Interval.FourHour,
+            Symbol = "BTCUSD"
+        },
+        new Candle
+        {
+            High = 46978,
+            Close = 46415,
+            Open = 46696,
+            Low = 46105,
+            DateTime = DateTime.UtcNow.AddHours(4 * 5),
+            Interval = Algo.Bot.Domain.ValueObject.Interval.FourHour,
+            Symbol = "BTCUSD"
+        },
+    };
+}

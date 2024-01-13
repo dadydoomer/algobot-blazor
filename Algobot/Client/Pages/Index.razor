@@ -1,9 +1,9 @@
-﻿@page "/"
+﻿@using Algo.Bot.Domain.Models;
+@using ApexCharts
+@using Microsoft.AspNetCore.Authorization;
 
-<PageTitle>Index</PageTitle>
+@page "/"
+@attribute [Authorize]
 
-<h1>Hello, world!</h1>
-
-Welcome to your new app.
-
-<SurveyPrompt Title="How is Blazor working for you?" />
+<PageTitle>Sentiment</PageTitle>
+<PositiveSentimentPage></PositiveSentimentPage>

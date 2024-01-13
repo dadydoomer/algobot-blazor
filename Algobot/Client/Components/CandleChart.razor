@@ -1,0 +1,126 @@
+﻿@using Algo.Bot.Domain.Models;
+@using ApexCharts;
+
+@implements IDisposable
+
+@if (Candles.Any())
+{
+    <ApexChart @ref="chart"
+                Options="options"
+                TItem="Candle"
+                XAxisType="XAxisType.Datetime">
+        <ApexCandleSeries TItem="Candle"
+                            Items="Candles"
+                            Name="Apex Stock Price"
+                            XValue="@(e => e.DateTime.ToUnixTimeMilliseconds())"
+                            Open="@(e => e.Open)"
+                            High="@(e => e.High)"
+                            Low="@(e => e.Low)"
+                            Close="@(e => e.Close)"
+                            OrderByDescending="e=> e.X" />
+    </ApexChart>
+    <div class="d-flex flex-column justify-content-center align-items-center">
+        <MudText>Sentiment range</MudText>
+        <MudSwitch Class="pl-5" Value="@showSentimentRange" ValueChanged="@(async (bool showRange) => await OnSentimentRangeSwitch(showRange))" Color="MudBlazor.Color.Primary" />
+    </div>
+}
+
+@code {
+    ApexChart<Candle> chart = null!;
+    private ApexChartOptions<Candle> options = new ApexChartOptions<Candle>
+    {
+        Chart = new Chart
+        {
+            Width = 350,
+            Height = 250,
+            Toolbar = new Toolbar
+            {
+                Show = false   
+            }
+        }
+    };
+    private bool showSentimentRange = false;
+
+    [Parameter]
+    public List<Candle> Candles { get; set; } = new List<Candle>();
+
+    protected override async Task OnInitializedAsync() => await RenderChart();
+
+    protected override async Task OnParametersSetAsync()
+    {
+        await UpdateChart();
+        await OnSentimentRangeSwitch(false);
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            await AddYAxisAnnotation();
+        }
+    }
+
+    private async Task RenderChart()
+    {
+        if (chart is not null)
+        {
+            await chart.RenderAsync();
+        }
+    }
+
+    private async Task UpdateChart()
+    {
+        if (chart is not null)
+        {
+            await chart.UpdateSeriesAsync();
+        }
+    }
+
+    private async Task OnSentimentRangeSwitch(bool showRange)
+    {
+        if (showRange)
+        {
+            await AddYAxisAnnotation();
+        }
+        else
+        {
+            await ClearAnnotations();
+        }
+
+        showSentimentRange = showRange;
+    }
+
+    private async Task AddYAxisAnnotation()
+    {
+        if (Candles.Any())
+        {
+            var firstCandle = Candles.First();
+            var annotation = new AnnotationsYAxis
+            {
+
+                Y = firstCandle.HalfBodyPrice(),
+                Y2 = firstCandle.Close,
+                FillColor = "violet",
+                BorderWidth = 1
+            };
+
+            if (chart is not null)
+            {
+                await chart.AddYAxisAnnotationAsync(annotation, true);
+            }
+        }
+    }
+
+    private async Task ClearAnnotations()
+    {
+        if (chart is not null)
+        {
+            await chart.ClearAnnotationsAsync();            
+        }
+    }
+
+    public void Dispose()
+    {
+        chart?.Dispose();
+    }
+}
