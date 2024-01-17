@@ -13,3 +13,4 @@ EXPOSE 443
 ENTRYPOINT ["dotnet", "Algobot.Server.dll"]
 
 # docker build -t algobot-blazor -f Dockerfile .
+# docker-compose up
