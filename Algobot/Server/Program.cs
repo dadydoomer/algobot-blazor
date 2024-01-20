@@ -10,6 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using Algo.Bot.Domain.ValueObject;
 using Microsoft.AspNetCore.Builder;
+using Algobot.Server.BackgroundJobs;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +31,11 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(ApiKeySchemeOptions.PolicyName, policy => policy.RequireClaim(ClaimTypes.NameIdentifier));
 });
 
-builder.Services.AddHostedService<TimedHostedService>();
+builder.Services.AddHostedService<FourHourTimeJob>();
+builder.Services.AddHostedService<OneDayTimeJob>();
+builder.Services.AddHostedService<OneWeek>();
+
+
 builder.Services.AddDbContextFactory<AlgobotDbContext>(
     options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));

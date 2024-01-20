@@ -5,17 +5,17 @@ using Algo.Bot.Domain.ValueObject;
 
 namespace BlazorAlgoBot.Server.BackgroundJobs
 {
-    public class TimedHostedService : BackgroundService
+    public class FourHourTimeJob : BackgroundService
     {
         private readonly IDateTimeProvider _dateTimeProvider;
-        private readonly ILogger<TimedHostedService> _logger;
+        private readonly ILogger<FourHourTimeJob> _logger;
         private int _executionCount;
 
-        public TimedHostedService(IPostiveSentimentDataProvider dataProvider,
+        public FourHourTimeJob(IPostiveSentimentDataProvider dataProvider,
                                     ICryptocurrencyExchangeService exchange,
                                     ISentimentService sentimentService, 
                                     IDateTimeProvider dateTimeProvider, 
-                                    ILogger<TimedHostedService> logger)
+                                    ILogger<FourHourTimeJob> logger)
         {
             DataProvider = dataProvider;
             Exchange = exchange;
@@ -32,8 +32,8 @@ namespace BlazorAlgoBot.Server.BackgroundJobs
         {
             _logger.LogInformation("Timed Hosted Service running.");
 
-            var minimalPercentageChange = 0.1m;
-            var interval = Interval.FiveMinutes;
+            var minimalPercentageChange = 5m;
+            var interval = Interval.FourHour;
             var intervalInSeconds = (int)interval;
 
             var toFirstRun = _dateTimeProvider.TimeToNextFullDateTime(interval);
