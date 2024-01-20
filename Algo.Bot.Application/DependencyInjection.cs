@@ -35,7 +35,7 @@ namespace Algo.Bot.Application
         {
             services.AddTransient<IOrderIndicator, BuyWhen2CandlesAreAbove75PercentageBodyRange>();
             services.AddTransient<IMoneyManagementStrategy, LowRiskTakeProfit2StopLoss1>();
-            services.AddTransient<IMaintenanceIndicator, AlwaysTrueSentiment>();
+            services.AddTransient<IMaintenanceIndicator, PositiveSentimentForAllCandlesAbove50PercentageFirstCandle>();
         }
     }
 }
