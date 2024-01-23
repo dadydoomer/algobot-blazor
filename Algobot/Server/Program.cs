@@ -1,15 +1,11 @@
 using Algo.Bot.Infrastructure;
 using Algo.Bot.Application;
-using Algo.Bot.Application.Ports.Storage;
-using Algo.Bot.Domain.Models;
 using BlazorAlgoBot.Server.Authorization;
 using System.Security.Claims;
-using BlazorAlgoBot.Server.BackgroundJobs;
 using Algo.Bot.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
-using System;
-using Algo.Bot.Domain.ValueObject;
-using Microsoft.AspNetCore.Builder;
+using Hangfire;
+using BlazorAlgoBot.Server.BackgroundJobs;
 using Algobot.Server.BackgroundJobs;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -31,10 +27,8 @@ builder.Services.AddAuthorization(options =>
     options.AddPolicy(ApiKeySchemeOptions.PolicyName, policy => policy.RequireClaim(ClaimTypes.NameIdentifier));
 });
 
-builder.Services.AddHostedService<FourHourTimeJob>();
-builder.Services.AddHostedService<OneDayTimeJob>();
-builder.Services.AddHostedService<OneWeek>();
-
+builder.Services.AddSingleton<ICoinIntervalJob, CoinIntervalJob>();
+builder.Services.AddHostedService<CoinDataProviderJob>();
 
 builder.Services.AddDbContextFactory<AlgobotDbContext>(
     options =>
@@ -42,6 +36,14 @@ builder.Services.AddDbContextFactory<AlgobotDbContext>(
 builder.Services.AddDbContext<AlgobotDbContext>(
     options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+builder.Services.AddHangfire(configuration => configuration
+            .UseSimpleAssemblyNameTypeSerializer()
+            .UseRecommendedSerializerSettings()
+            .UseSqlServerStorage("Server=localhost,8002; Database=AlgobotDatabase; User Id=sa; Password=2c1b06b2-b286-47b5-ad77-60bf0aa6a13a;"));
+
+// Add the processing server as IHostedService
+builder.Services.AddHangfireServer();
 
 var app = builder.Build();
 
@@ -61,66 +63,16 @@ else
     app.UseHsts();
 }
 
+app.UseHangfireDashboard();
 app.UseHttpsRedirection();
-
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 app.UseRouting();
-
 app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 
-var coins = new List<Coin> 
-{
-    new Coin("BTCUSDT", Interval.FifteenMinutes, DateTime.UtcNow, new List<Candle>
-    {
-        new Candle 
-        {
-            DateTime = DateTime.UtcNow.AddSeconds((int)Interval.FifteenMinutes),
-            Interval = Interval.FifteenMinutes,
-            Symbol = "BTCUSDT",
-            High = 2200,
-            Close = 2100,
-            Open = 2000,
-            Low = 1900
-        },
-        new Candle
-        {
-            DateTime = DateTime.UtcNow.AddSeconds((int)Interval.FifteenMinutes * 2),
-            Interval = Interval.FifteenMinutes,
-            Symbol = "BTCUSDT",
-            High = 2200,
-            Close = 2100,
-            Open = 2000,
-            Low = 1900
-        },
-    }),
-    new Coin("ETHUSDT", Interval.FifteenMinutes, DateTime.UtcNow, new List<Candle>
-    {
-        new Candle
-        {
-            DateTime = DateTime.UtcNow.AddSeconds((int)Interval.FifteenMinutes),
-            Interval = Interval.FifteenMinutes,
-            Symbol = "ETHUSDT",
-            High = 220,
-            Close = 210,
-            Open = 200,
-            Low = 190
-        },
-        new Candle
-        {
-            DateTime = DateTime.UtcNow.AddSeconds((int)Interval.FifteenMinutes * 2),
-            Interval = Interval.FifteenMinutes,
-            Symbol = "BTCUSDT",
-            High = 320,
-            Close = 210,
-            Open = 200,
-            Low = 190
-        },
-    }),
-};
-
+app.MapHangfireDashboard();
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
