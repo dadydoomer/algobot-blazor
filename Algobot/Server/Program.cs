@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Hangfire;
 using BlazorAlgoBot.Server.BackgroundJobs;
 using Algobot.Server.BackgroundJobs;
+using Algobot.Server.Authorization;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -40,9 +41,8 @@ builder.Services.AddDbContext<AlgobotDbContext>(
 builder.Services.AddHangfire(configuration => configuration
             .UseSimpleAssemblyNameTypeSerializer()
             .UseRecommendedSerializerSettings()
-            .UseSqlServerStorage("Server=localhost,8002; Database=AlgobotDatabase; User Id=sa; Password=2c1b06b2-b286-47b5-ad77-60bf0aa6a13a;"));
+            .UseSqlServerStorage(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Add the processing server as IHostedService
 builder.Services.AddHangfireServer();
 
 var app = builder.Build();
@@ -63,7 +63,10 @@ else
     app.UseHsts();
 }
 
-app.UseHangfireDashboard();
+app.UseHangfireDashboard("/hangfire", new DashboardOptions 
+{
+    Authorization = new[] { new DashboardAuthorizationFilter() }
+});
 app.UseHttpsRedirection();
 app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
