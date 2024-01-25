@@ -40,6 +40,7 @@ namespace Algo.Bot.Application.Ports.Services
             decimal stopPrice);
 
         Task<Candle> GetCandle(string symbol, Interval interval, DateTime start, DateTime end);
+        Task<Candle> GetLastCandle(string symbol, Interval interval);
         Task<IList<Candle>> GetCandles(string symbol, Interval interval, DateTime start, DateTime end);
         Task<(int pricePrecision, int quantityPrecision)> GetSymbolPrecisions(string symbol);
     }

@@ -232,5 +232,28 @@ namespace Algo.Bot.Infrastructure.Adapters.HttpClients
 
             throw new NotFoundException($"Candle not found at binance exchange. Symbol {symbol}, Interval {interval}.");
         }
+
+        public async Task<Candle> GetLastCandle(string symbol, Interval interval)
+        {
+            var binanceInterval = ToBinanceInterval.Convert(interval);
+            var binanceCandles = await _binanceClient.SpotApi.ExchangeData.GetKlinesAsync(symbol, binanceInterval);
+            if (binanceCandles.Data != null
+            && binanceCandles.Data.Any())
+            {
+                var firstCandle = binanceCandles.Data.First();
+                return new Candle
+                {
+                    Symbol = symbol,
+                    Interval = interval,
+                    DateTime = firstCandle.OpenTime,
+                    Open = firstCandle.OpenPrice,
+                    Close = firstCandle.ClosePrice,
+                    High = firstCandle.HighPrice,
+                    Low = firstCandle.LowPrice,
+                };
+            }
+
+            throw new NotFoundException($"Candle not found at binance exchange. Symbol {symbol}, Interval {interval}.");
+        }
     }
 }

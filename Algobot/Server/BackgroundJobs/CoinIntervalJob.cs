@@ -11,27 +11,21 @@ namespace Algobot.Server.BackgroundJobs
         private readonly IPostiveSentimentDataProvider _dataProvider;
         private readonly ICryptocurrencyExchangeService _exchange;
         private readonly ISentimentService _sentimentService;
-        private readonly IDateTimeProvider _dateTimeProvider;
         private readonly ILogger<CoinIntervalJob> _logger;
 
         public CoinIntervalJob(IPostiveSentimentDataProvider dataProvider,
                                     ICryptocurrencyExchangeService exchange,
                                     ISentimentService sentimentService,
-                                    IDateTimeProvider dateTimeProvider,
                                     ILogger<CoinIntervalJob> logger)
         {
             _dataProvider = dataProvider;
             _exchange = exchange;
             _sentimentService = sentimentService;
-            _dateTimeProvider = dateTimeProvider;
             _logger = logger;
         }
 
         public async Task DoWork(Interval interval, decimal minimalPercentageChange)
         {
-            var start = _dateTimeProvider.OpenCandleDateTime(interval);
-            var end = _dateTimeProvider.CloseCandleDateTime(interval);
-
             var latestPositiveSymbols = await _dataProvider.GetSymbols(interval, minimalPercentageChange);
             var existingSymbols = await _sentimentService.GetSymbols();
             var symbols = MergeSymbols(latestPositiveSymbols, existingSymbols);
@@ -40,7 +34,7 @@ namespace Algobot.Server.BackgroundJobs
             {
                 try
                 {
-                    var candle = await _exchange.GetCandle(symbol, interval, start, end);
+                    var candle = await _exchange.GetLastCandle(symbol, interval);
                     await _sentimentService.Handle(candle, minimalPercentageChange);
                 }
                 catch (Exception e)
