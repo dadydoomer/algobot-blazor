@@ -2,6 +2,7 @@
 using Algo.Bot.Application.Ports.Services;
 using Algo.Bot.Domain.Exceptions;
 using Algo.Bot.Domain.Models;
+using Algo.Bot.Domain.Ports;
 using Algo.Bot.Domain.ValueObject;
 using Algo.Bot.Infrastructure.Converters;
 using Binance.Net.Clients;
@@ -13,10 +14,12 @@ namespace Algo.Bot.Infrastructure.Adapters.HttpClients
     public class BinanceExchangeService : ICryptocurrencyExchangeService
     {
         private readonly IBinanceClient _binanceClient;
+        private readonly IDateTimeProvider _dateTimeProvider;
 
-        public BinanceExchangeService(IBinanceClient binanceClient)
+        public BinanceExchangeService(IBinanceClient binanceClient, IDateTimeProvider dateTimeProvider)
         {
             _binanceClient = binanceClient;
+            _dateTimeProvider = dateTimeProvider;
         }
 
         public async Task<ExchangeAccount> GetAccountInfo()
@@ -236,20 +239,20 @@ namespace Algo.Bot.Infrastructure.Adapters.HttpClients
         public async Task<Candle> GetLastCandle(string symbol, Interval interval)
         {
             var binanceInterval = ToBinanceInterval.Convert(interval);
-            var binanceCandles = await _binanceClient.SpotApi.ExchangeData.GetKlinesAsync(symbol, binanceInterval);
+            var binanceCandles = await _binanceClient.SpotApi.ExchangeData.GetKlinesAsync(symbol, binanceInterval, null, null, 2);
             if (binanceCandles.Data != null
             && binanceCandles.Data.Any())
             {
-                var firstCandle = binanceCandles.Data.First();
+                var lastCloseCandle = binanceCandles.Data.Last(x => x.CloseTime < _dateTimeProvider.Now());
                 return new Candle
                 {
                     Symbol = symbol,
                     Interval = interval,
-                    DateTime = firstCandle.OpenTime,
-                    Open = firstCandle.OpenPrice,
-                    Close = firstCandle.ClosePrice,
-                    High = firstCandle.HighPrice,
-                    Low = firstCandle.LowPrice,
+                    DateTime = lastCloseCandle.OpenTime,
+                    Open = lastCloseCandle.OpenPrice,
+                    Close = lastCloseCandle.ClosePrice,
+                    High = lastCloseCandle.HighPrice,
+                    Low = lastCloseCandle.LowPrice,
                 };
             }
 

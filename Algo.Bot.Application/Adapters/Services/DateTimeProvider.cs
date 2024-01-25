@@ -1,5 +1,6 @@
 ﻿using Algo.Bot.Domain.Ports;
 using Algo.Bot.Domain.ValueObject;
+using MediatR.Wrappers;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,8 @@ namespace Algo.Bot.Application.Adapters.Services
 {
     public class DateTimeProvider : IDateTimeProvider
     {
+        public DateTime Now(DateTime? now = null) => now ?? DateTime.UtcNow;
+
         public DateTime CloseCandleDateTime(Interval interval, DateTime? now = null)
         {
             DateTime Now = now ?? DateTime.UtcNow;
