@@ -11,7 +11,9 @@ using CryptoExchange.Net.Authentication;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json.Linq;
 using Serilog;
+using Telegram.Bot;
 
 namespace Algo.Bot.Infrastructure
 {
@@ -22,6 +24,7 @@ namespace Algo.Bot.Infrastructure
             AddStorages(services);
             AddHttpClients(services, configuration);
             AddExternalServices(services, configuration);
+            AddNotification(services, configuration);
         }
 
         public static void AddHttpClients(IServiceCollection services, IConfiguration configuration)
@@ -49,6 +52,15 @@ namespace Algo.Bot.Infrastructure
         {
             services.AddSingleton<ICoinStorage, CoinDbStorage>();
             services.AddSingleton<IOrderStorage, OrderStorage>();
+        }
+
+        public static void AddNotification(IServiceCollection services, IConfiguration configuration)
+        {
+            var telegramOptions = new TelegramOptions();
+            configuration.GetSection(TelegramOptions.Telegram).Bind(telegramOptions);
+
+            services.AddHttpClient<ITelegramBotClient>(httpClient => new TelegramBotClient(telegramOptions.ApiKey, httpClient));
+            services.AddSingleton<INotificationService, TelegramService>();
         }
 
         public static void AddLogging(IServiceCollection services)

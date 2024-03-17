@@ -49,6 +49,11 @@ namespace Algo.Bot.Domain.Models
             if (ContinuedInPositiveSentiment(sentimentIndicator))
             {
                 AddDomainEvent(new CoinMaintained(this));
+
+                if (Candles.Count >= 3)
+                {
+                    AddDomainEvent(new CoinApproved(this));
+                }
             }
             else
             {

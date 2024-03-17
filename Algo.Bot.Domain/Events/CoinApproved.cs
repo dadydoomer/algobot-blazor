@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Algo.Bot.Domain.Models;
+using Algo.Bot.Domain.ValueObject;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,17 +10,18 @@ namespace Algo.Bot.PositiveSentiment.Models.Events
 {
     public class CoinApproved : IDomainEvent
     {
-        public string Id { get; }
+        public string Symbol { get; set; } = string.Empty;
 
-        public DateTime BuyDate { get; }
+        public Interval Interval { get; set; }
 
-        public decimal MarkPrice { get; }
+        public string ApprovedMessage { get; } = string.Empty;
 
-        public CoinApproved(string id, DateTime buyDate, decimal markPrice)
+        public CoinApproved(Coin coin)
         {
-            Id = id;
-            BuyDate = buyDate;
-            MarkPrice = markPrice;
+            Symbol = coin.Symbol;
+            Interval = coin.Interval;
+
+            ApprovedMessage = $"Buy signal! Symbol {coin.Symbol}, Inverval {coin.Interval}.";
         }
     }
 }
