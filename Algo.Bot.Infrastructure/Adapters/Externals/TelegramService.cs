@@ -10,10 +10,10 @@ namespace Algo.Bot.Infrastructure.Adapters.Externals
         private readonly ITelegramBotClient _botClient;
         private readonly TelegramOptions _options;
 
-        public TelegramService(ITelegramBotClient botClient, IOptions<TelegramOptions> options)
+        public TelegramService(IOptions<TelegramOptions> options)
         {
-            _botClient = botClient;
             _options = options.Value;
+            _botClient = new TelegramBotClient(_options.ApiKey);
         }
 
         public async Task Notify(string message)
