@@ -20,6 +20,7 @@ namespace Algo.Bot.Application.Adapters.Events.Handlers
         {
             try
             {
+                _logger.LogInformation($"Message {notification.ApprovedMessage}.");
                 await _notificationService.Notify(notification.ApprovedMessage);
             }
             catch (Exception e)
