@@ -59,6 +59,8 @@ namespace Algo.Bot.Infrastructure
             var telegramOptions = new TelegramOptions();
             configuration.GetSection(TelegramOptions.Telegram).Bind(telegramOptions);
 
+            services.Configure<TelegramOptions>(configuration.GetSection(TelegramOptions.Telegram));
+
             services.AddHttpClient<ITelegramBotClient>(httpClient => new TelegramBotClient(telegramOptions.ApiKey, httpClient));
             services.AddSingleton<INotificationService, TelegramService>();
         }
