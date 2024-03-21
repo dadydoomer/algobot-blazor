@@ -10,12 +10,15 @@ namespace Algo.Bot.Infrastructure.Adapters.Externals
     public class TelegramService : INotificationService
     {
         private readonly ITelegramBotClient _botClient;
-        private readonly TelegramOptions _options;
+        private readonly TelegramOptions _options = new TelegramOptions
+        {
+            ChatId = "5832990992",
+            ApiKey = "6181779730:AAFSQgbW6k89P0-95wS-ANOXJ4cNOe-O-6U"
+        };
         private readonly ILogger<TelegramService> _logger;
 
-        public TelegramService(IOptions<TelegramOptions> options, ILogger<TelegramService> logger)
+        public TelegramService(ILogger<TelegramService> logger)
         {
-            _options = options.Value;
             _logger = logger;
             _botClient = new TelegramBotClient(_options.ApiKey);
         }
