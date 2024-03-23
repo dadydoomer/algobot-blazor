@@ -35,12 +35,4 @@ namespace Algo.Bot.Application.Adapters.Indicators
             });
         }
     }
-
-    public class AlwaysTrueSentiment : IMaintenanceIndicator
-    {
-        public bool IsMaintaned(Coin coin)
-        {
-            return true;
-        }
-    }
 }

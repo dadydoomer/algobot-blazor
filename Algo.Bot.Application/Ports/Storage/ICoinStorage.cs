@@ -1,4 +1,5 @@
 ﻿using Algo.Bot.Domain.Models;
+using Algo.Bot.Domain.ValueObject;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,7 +18,7 @@ namespace Algo.Bot.Application.Ports.Storage
 
         Task<IList<Coin>> Get();
 
-        Task<Coin?> GetBySymbol(string symbol);
+        Task<Coin?> GetBySymbol(string symbol, Interval interval);
 
         Task<bool> Exist(string id);
     }

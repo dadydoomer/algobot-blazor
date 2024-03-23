@@ -36,7 +36,7 @@ namespace Algo.Bot.Application.Adapters.Services
 
         public async Task Handle(Candle candle, decimal minimumPercentageChange)
         {
-            var coin = await _coinStorage.GetBySymbol(candle.Symbol);
+            var coin = await _coinStorage.GetBySymbol(candle.Symbol, candle.Interval);
             if (coin is not null)
             {
                 coin.AddCandle(candle, _buyIndicator, _sentimentIndicator);

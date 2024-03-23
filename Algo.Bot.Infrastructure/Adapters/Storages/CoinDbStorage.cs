@@ -1,6 +1,7 @@
 ﻿using Algo.Bot.Application.Ports.Storage;
 using Algo.Bot.Domain.Exceptions;
 using Algo.Bot.Domain.Models;
+using Algo.Bot.Domain.ValueObject;
 using Algo.Bot.Infrastructure.Converters;
 using Algo.Bot.Infrastructure.Database;
 using CryptoExchange.Net.CommonObjects;
@@ -77,11 +78,11 @@ namespace Algo.Bot.Infrastructure.Adapters.Storages
             return result;
         }
 
-        public async Task<Coin?> GetBySymbol(string symbol)
+        public async Task<Coin?> GetBySymbol(string symbol, Interval interval)
         {
             using (var db = _contextFactory.CreateDbContext())
             {
-                var candles = await db.Candles.AsNoTracking().Where(x => x.Symbol == symbol).ToListAsync();
+                var candles = await db.Candles.AsNoTracking().Where(x => x.Symbol == symbol && x.Interval == interval).ToListAsync();
                 if (candles.Any())
                 {
                     return ToCoin.Map(candles);

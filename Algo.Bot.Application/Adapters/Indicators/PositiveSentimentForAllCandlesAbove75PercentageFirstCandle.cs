@@ -29,27 +29,5 @@ namespace Algo.Bot.Application.Adapters.Indicators
                 return false;
             });
         }
-
-        private bool IsFirstCandle(Candle candle, decimal minimumPercentageChange)
-        {
-            if (!candle.IsGreenCandle())
-            {
-                return false;
-            }
-            if (candle.PercentageBodyChange() < minimumPercentageChange)
-            {
-                return false;
-            }
-            if (candle.TopWig() > candle.PercentageBodyChange())
-            {
-                return false;
-            }
-            if (!candle.HasLiquity())
-            {
-                return false;
-            }
-
-            return true;
-        }
     }
 }
