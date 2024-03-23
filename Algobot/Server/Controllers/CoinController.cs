@@ -1,5 +1,6 @@
 ﻿using Algo.Bot.Application.Ports.Storage;
 using Algo.Bot.Domain.Models;
+using Algo.Bot.Domain.ValueObject;
 using Algo.Bot.Infrastructure.Adapters;
 using Algo.Bot.Infrastructure.Adapters.Storages;
 using BlazorAlgoBot.Server.Authorization;
@@ -31,9 +32,9 @@ namespace Algobot.Server.Controllers
 
         [Authorize(Policy = ApiKeySchemeOptions.PolicyName)]
         [HttpGet("{symbol}")]
-        public async Task<IActionResult> GetCandles([FromRoute]string symbol)
+        public async Task<IActionResult> GetCandles([FromRoute]string symbol, [FromRoute] Interval interval)
         {
-            var coin = await _coinStorage.GetBySymbol(symbol);
+            var coin = await _coinStorage.GetBySymbol(symbol, interval);
 
             if (coin is null)
             {
