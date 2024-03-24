@@ -4,6 +4,7 @@ using Algo.Bot.Infrastructure.Database;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Algo.Bot.Infrastructure.Migrations
 {
     [DbContext(typeof(AlgobotDbContext))]
-    partial class AlgobotDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240324170729_ChangeCandlePrecision")]
+    partial class ChangeCandlePrecision
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

@@ -33,7 +33,7 @@ namespace Algo.Bot.Infrastructure.Converters
                     Open = candle.Open,
                     High = candle.High,
                     Low = candle.Low,
-                    Close = candle.Low,
+                    Close = candle.Close,
                     DateTime = candle.DateTime
                 });
 
