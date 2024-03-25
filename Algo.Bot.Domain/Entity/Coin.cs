@@ -50,7 +50,7 @@ namespace Algo.Bot.Domain.Models
             {
                 AddDomainEvent(new CoinMaintained(this));
 
-                if (Candles.Count >= 3)
+                if (orderIndicator.Buy(this))
                 {
                     AddDomainEvent(new CoinApproved(this));
                 }

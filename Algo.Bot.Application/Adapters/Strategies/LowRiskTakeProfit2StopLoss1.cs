@@ -10,7 +10,7 @@ namespace Algo.Bot.Application.Adapters.Strategies
 {
     public class LowRiskTakeProfit2StopLoss1 : IMoneyManagementStrategy
     {
-        readonly decimal StopLossUsdt = 5m;
+        readonly decimal StopLossUsdt = 20m;
 
         public decimal StoppLoss(Coin coin)
         {
@@ -34,7 +34,7 @@ namespace Algo.Bot.Application.Adapters.Strategies
 
         public int Leverage()
         {
-            return 5;
+            return 10;
         }
 
         public decimal TotalAmount(Coin coin)

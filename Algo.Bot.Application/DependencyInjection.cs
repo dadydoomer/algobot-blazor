@@ -33,7 +33,7 @@ namespace Algo.Bot.Application
 
         public static void AddStrategies(IServiceCollection services)
         {
-            services.AddTransient<IOrderIndicator, BuyWhen2CandlesAreAbove75PercentageBodyRange>();
+            services.AddTransient<IOrderIndicator, BuyWhen2CandlesAreAbove50PercentageBodyRange>();
             services.AddTransient<IMoneyManagementStrategy, LowRiskTakeProfit2StopLoss1>();
             services.AddTransient<IMaintenanceIndicator, PositiveSentimentForAllCandlesAbove50PercentageFirstCandle>();
         }

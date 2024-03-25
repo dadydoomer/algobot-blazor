@@ -16,8 +16,8 @@ namespace Algo.Bot.Application.Adapters.Indicators
 
         public bool Buy(Coin coin)
         {
-            return coin.Candles.Count >= 2
-                && coin.Candles.Any(c => c.IsGreenCandle())
+            return coin.Candles.Count >= 3
+                && coin.Candles.Skip(1).Any(c => c.IsGreenCandle())
                 && _positiveSentiment.IsMaintaned(coin);
         }
 

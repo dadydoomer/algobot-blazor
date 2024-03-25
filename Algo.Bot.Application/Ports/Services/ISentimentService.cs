@@ -10,7 +10,7 @@ namespace Algo.Bot.Application.Ports.Services
 {
     public interface ISentimentService
     {
-        Task Handle(Candle candle, decimal minimumPercentageChange);
+        Task Handle(Candle candle);
 
         Task<IEnumerable<string>> GetSymbols();
 

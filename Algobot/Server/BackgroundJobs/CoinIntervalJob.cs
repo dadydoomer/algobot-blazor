@@ -35,7 +35,7 @@ namespace Algobot.Server.BackgroundJobs
                 try
                 {
                     var candle = await _exchange.GetLastCandle(symbol, interval);
-                    await _sentimentService.Handle(candle, minimalPercentageChange);
+                    await _sentimentService.Handle(candle);
                 }
                 catch (Exception e)
                 {
