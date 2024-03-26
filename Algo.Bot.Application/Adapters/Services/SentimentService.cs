@@ -12,25 +12,31 @@ namespace Algo.Bot.Application.Adapters.Services
     public class SentimentService : ISentimentService
     {
         private readonly ICoinStorage _coinStorage;
+        private readonly IRetracementStorage _retracementStorage;
         private readonly IOrderStorage _orderStorage;
         private readonly IOrderIndicator _buyIndicator;
         private readonly IMaintenanceIndicator _sentimentIndicator;
         private readonly IEventDispatcher _eventDispatcher;
+        private readonly INotificationService _notificationService;
         private readonly ILogger<SentimentService> _logger;
 
         public SentimentService(
             ICoinStorage coinStorage,
+            IRetracementStorage retracementStorage,
             IOrderStorage orderStorage,
             IOrderIndicator buyIndicator,
             IMaintenanceIndicator sentimentIndicator,
-            IEventDispatcher eventDispatcher, 
+            IEventDispatcher eventDispatcher,
+            INotificationService notificationService,
             ILogger<SentimentService> logger)
         {
             _coinStorage = coinStorage;
+            _retracementStorage = retracementStorage;
             _orderStorage = orderStorage;
             _buyIndicator = buyIndicator;
             _sentimentIndicator = sentimentIndicator;
             _eventDispatcher = eventDispatcher;
+            _notificationService = notificationService;
             _logger = logger;
         }
 
@@ -76,6 +82,24 @@ namespace Algo.Bot.Application.Adapters.Services
         public async Task<IEnumerable<string>> GetSymbols()
         {
             return (await Get()).Select(c => c.Symbol);
+        }
+
+        public async Task<IEnumerable<ExpectedRetracement>> GetRetracements()
+        {
+            return await _retracementStorage.GetAll();
+        }
+
+        public async Task RetracementComplete(string symbol)
+        {
+            await _retracementStorage.RetracementCompleted(symbol);
+        }
+
+        public async Task RetracementNewAth(string symbol, decimal value, DateTime date)
+        {
+            await _retracementStorage.UpdateRetracement(symbol, value, date);
+
+            var message = $"Retracement completed. Symbol {symbol}, Value {value}, Date {date}.";
+            await _notificationService.Notify(message);
         }
     }
 }

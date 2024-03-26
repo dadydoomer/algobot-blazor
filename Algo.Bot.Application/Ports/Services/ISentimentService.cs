@@ -19,5 +19,11 @@ namespace Algo.Bot.Application.Ports.Services
         Task<Coin> Get(string id);
 
         Task<IEnumerable<Order>> GetOrders();
+
+        Task<IEnumerable<ExpectedRetracement>> GetRetracements();
+
+        Task RetracementComplete(string symbol);
+
+        Task RetracementNewAth(string symbol, decimal value, DateTime date);
     }
 }

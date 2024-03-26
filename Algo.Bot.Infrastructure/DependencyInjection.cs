@@ -51,6 +51,7 @@ namespace Algo.Bot.Infrastructure
         public static void AddStorages(IServiceCollection services)
         {
             services.AddSingleton<ICoinStorage, CoinDbStorage>();
+            services.AddSingleton<IRetracementStorage, RetracementStorage>();
             services.AddSingleton<IOrderStorage, OrderStorage>();
         }
 

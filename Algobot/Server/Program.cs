@@ -29,6 +29,7 @@ builder.Services.AddAuthorization(options =>
 });
 
 builder.Services.AddSingleton<ICoinIntervalJob, CoinIntervalJob>();
+builder.Services.AddSingleton<IRetracementJob, RetracementJob>();
 builder.Services.AddHostedService<CoinDataProviderJob>();
 
 builder.Services.AddDbContextFactory<AlgobotDbContext>(
