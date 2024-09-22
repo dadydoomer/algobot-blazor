@@ -33,9 +33,9 @@ namespace Algo.Bot.Application
 
         public static void AddStrategies(IServiceCollection services)
         {
-            services.AddTransient<IOrderIndicator, BuyWhenFairValueGap>();
+            services.AddTransient<IOrderIndicator, BuyWhen2CandlesAreAbove50PercentageBodyRange>();
             services.AddTransient<IMoneyManagementStrategy, LowRiskTakeProfit2StopLoss1>();
-            services.AddTransient<IMaintenanceIndicator, PotentialFairValueGap>();
+            services.AddTransient<IMaintenanceIndicator, PositiveSentimentForAllCandlesAbove50PercentageFirstCandle>();
         }
     }
 }
